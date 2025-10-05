@@ -1,8 +1,7 @@
 from selene import have, command
 from selene.support.shared import browser
-from typing import Literal
 from resources import resource
-
+import users
 
 class RegistrationPage:
     def __init__(self):
@@ -14,6 +13,21 @@ class RegistrationPage:
             have.size_greater_than_or_equal(3)
         )
         browser.all('[id^=google_ads][id$=container__]').perform(command.js.remove)
+        return self
+
+    def register(self, student: users.Student):
+        self.fill_first_name(student.first_name)
+        self.fill_last_name(student.last_name)
+        self.fill_email(student.email)
+        self.select_gender(student.gender)
+        self.fill_mobile_number(student.mobile_number)
+        self.select_date_of_birth(student.date_of_birth)
+        self.fill_subjects(student.subjects)
+        self.fill_hobbies(student.hobbies)
+        self.upload_picture(student.picture)
+        self.fill_address(student.address)
+        self.select_state(student.state)
+        self.select_city(student.city)
         return self
 
     def fill_first_name(self, value):
@@ -51,16 +65,16 @@ class RegistrationPage:
         return self
 
     def fill_subjects(self, value):
-        browser.element("#subjectsContainer").click()
         browser.element("#subjectsInput").type(value).press_enter()
         return self
 
-    def fill_hobbies(self, value: Literal['Sports', 'Reading', 'Music']):
-        browser.element(
-            {'Sports': 'label[for="hobbies-checkbox-1"]',
-            'Reading': 'label[for="hobbies-checkbox-2"]',
-            'Music': 'label[for="hobbies-checkbox-3"]'}[value]
-        ).click()
+    def fill_hobbies(self, value):
+        hobbies_options = {
+            'Sports': '[for="hobbies-checkbox-1"]',
+            'Reading': '[for="hobbies-checkbox-2"]',
+            'Music': '[for="hobbies-checkbox-3"]'
+        }
+        browser.element(hobbies_options[value]).click()
         return self
 
     def upload_picture(self, value):
@@ -72,8 +86,7 @@ class RegistrationPage:
         return self
 
     def select_state(self, value):
-        browser.element('#state').perform(command.js.scroll_into_view)
-        browser.element('#state').click()
+        browser.element('#state').perform(command.js.scroll_into_view).click()
         browser.all('[id^=react-select][id*=option]').element_by(
             have.exact_text(value)
         ).click()
@@ -86,23 +99,23 @@ class RegistrationPage:
         ).click()
         return self
 
-    def click_submit(self):
-        browser.element('#submit').click()
+    def submit(self):
+        browser.element("#submit").click()
         return self
 
-    def should_registered_user_with(self, full_name, email, gender, mobile_number, date_of_birth, subjects, hobbies, upload_picture, address, state_and_city):
+    def should_have_registered(self, student: users.Student):
         browser.element('.table').all('td').even.should(
             have.exact_texts(
-            full_name,
-            email,
-            gender,
-            mobile_number,
-            date_of_birth,
-            subjects,
-            hobbies,
-            upload_picture,
-            address,
-            state_and_city
+                student.full_name,
+                student.email,
+                student.gender,
+                student.mobile_number,
+                student.date_of_birth,
+                student.subjects,
+                student.hobbies,
+                student.picture,
+                student.address,
+                student.state_and_city
             )
         )
         return self
