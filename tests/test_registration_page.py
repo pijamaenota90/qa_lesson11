@@ -1,15 +1,22 @@
 from pages.registration_page import RegistrationPage
 from users import create_student
+import allure
 
-
+@allure.title("Successful registration_form")
 def test_student_registration_form():
     registration_page = RegistrationPage()
     student = create_student()
 
     # WHEN
-    registration_page.open()
-    registration_page.register(student)
-    registration_page.submit()
+    with allure.step("open registration page"):
+        registration_page.open()
+
+    with allure.step("enter student name"):
+        registration_page.register(student)
+
+    with allure.step("click submit"):
+        registration_page.submit()
     # THEN
-    registration_page.should_have_registered(student)
+    with allure.step("check results"):
+        registration_page.should_have_registered(student)
 
