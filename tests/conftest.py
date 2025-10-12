@@ -15,11 +15,10 @@ def browser_setup():
         },
         "goog:chromeOptions": {
             "args": [
-                "--no-user-data-dir",
-                "--incognito",
-                "--disable-dev-shm-usage",
                 "--no-sandbox",
-                "--disable-gpu"
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--headless=new"
             ]
         }
     }
