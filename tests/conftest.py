@@ -8,7 +8,7 @@ from utils import attach
 def browser_setup():
     capabilities = {
         "browserName": "chrome",
-        "browserVersion": "100.0",
+        "browserVersion": "128.0",
         "selenoid:options": {
             "enableVNC": True,
             "enableVideo": True
