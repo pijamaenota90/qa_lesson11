@@ -1,31 +1,31 @@
 import pytest
-from selenium import webdriver
+from allure_commons._allure import attach
 from selene import Browser, Config
-from utils import attach
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
 @pytest.fixture(scope='function')
 def browser_setup():
-    capabilities = {
-        "browserName": "chrome",
-        "browserVersion": "128.0",
-        "selenoid:options": {
-            "enableVNC": True,
-            "enableVideo": True
-        },
-        "goog:chromeOptions": {
-            "args": [
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--headless=new"
-            ]
-        }
-    }
+    options = ChromeOptions()
+
+
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--headless=new")
+
+
+    options.set_capability("browserName", "chrome")
+    options.set_capability("browserVersion", "128.0")
+    options.set_capability("selenoid:options", {
+        "enableVNC": True,
+        "enableVideo": True
+    })
 
     driver = webdriver.Remote(
         command_executor="https://user1:1234@selenoid.autotests.cloud/wd/hub",
-        desired_capabilities=capabilities
+        options=options
     )
 
     browser = Browser(Config(driver))
