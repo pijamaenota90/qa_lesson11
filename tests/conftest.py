@@ -1,10 +1,10 @@
 import pytest
-from allure_commons._allure import attach
-from selene import browser
 from selenium import webdriver
+from selene import Browser, Config
+from utils import attach
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def browser_setup():
     capabilities = {
         "browserName": "chrome",
@@ -18,8 +18,7 @@ def browser_setup():
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
                 "--disable-gpu",
-                "--headless=new",
-                "--user-data-dir=/tmp/chrome_profile"
+                "--headless=new"
             ]
         }
     }
@@ -29,12 +28,13 @@ def browser_setup():
         desired_capabilities=capabilities
     )
 
-    browser.config.driver = driver
+    browser = Browser(Config(driver))
 
-    yield
-
-    attach.add_screenshot(browser)
-    attach.add_logs(browser)
-    attach.add_html(browser)
-    attach.add_video(browser)
-    browser.quit()
+    try:
+        yield browser
+    finally:
+        attach.add_screenshot(browser)
+        attach.add_logs(browser)
+        attach.add_html(browser)
+        attach.add_video(browser)
+        browser.quit()
