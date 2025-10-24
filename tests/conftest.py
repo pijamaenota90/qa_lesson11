@@ -1,6 +1,6 @@
 import pytest
 from selenium import webdriver
-from selene import Browser, Config
+from selene import browser
 from utils import attach
 
 
@@ -28,7 +28,7 @@ def browser_setup():
         desired_capabilities=capabilities
     )
 
-    browser = Browser(Config(driver))
+    browser.config.driver = driver
 
     try:
         yield browser
