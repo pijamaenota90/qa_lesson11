@@ -3,7 +3,7 @@ from users import create_student
 import allure
 
 @allure.title("Successful registration_form")
-def test_student_registration_form():
+def test_student_registration_form(browser_setup):
     registration_page = RegistrationPage()
     student = create_student()
 
